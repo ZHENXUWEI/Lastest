@@ -1,11 +1,9 @@
 import axios from "axios";
 import { getCookie } from "./cookie";
 const service = axios.create({
-  baseURL: "http://localhost:8080/api",
-  baseURL: "http://localhost:8080",
   // baseURL: "/api",
-  // baseURL: "https://zcfw.hzsteel.com/api",
-  timeout: 15000, //超时15秒
+  baseURL: "http://localhost:8080",
+  timeout: 5000, // request timeout
 });
 
 // 请求拦截器
@@ -32,16 +30,7 @@ service.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    // return Promise.reject(error);
-     const config = error.config;
-     if (!config || config._retryCount >= 2) return Promise.reject(error);
-     config._retryCount = config._retryCount ? config._retryCount + 1 : 1;
-     console.warn(`Retrying request: ${config.url}, attempt ${config._retryCount}`);
-     if (config.method === 'get' && error.response && [408, 502, 503, 504].includes(error.response.status)) {
-       return new Promise(resolve => setTimeout(() => resolve(service(config)), 1000));
-     }
-     
-     return Promise.reject(error);
+    return Promise.reject(error);
   }
 );
 

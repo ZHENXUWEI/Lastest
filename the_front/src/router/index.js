@@ -6,8 +6,7 @@ import Match from '@/components/Match.vue'
 import Detail from '@/views/PolicyDetail.vue'
 import CompanyInfo from '@/components/CompanyInfo.vue'
 import Index from '@/views/Index.vue'
-// import Home from '@/views/Home.vue'
-const Home = () => import('@/views/Home.vue')
+import Home from '@/views/Home.vue'
 import Service from '@/views/Service.vue'
 import EnpriseEdit from '@/components/EnpriseEdit.vue'
 import EnpriseInCom from '@/components/EnpriseInCom.vue'
@@ -31,10 +30,6 @@ const router = createRouter({
       path: '/',
       name: 'Home',
       component: Home
-    }, {
-          path: '/home',
-          component: () => import('@/views/Home.vue'), // 确保组件路径正确
-          meta: { title: '首页', requiresAuth: true } // 需要登录权限
     },
     
     {

@@ -68,7 +68,6 @@ const confirmFun=()=>{
         </table>
         <span class="edit_button" @click="confirmFun">确定</span>
     </div>
-
   
 </template>
 

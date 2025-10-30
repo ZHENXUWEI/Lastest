@@ -16,7 +16,7 @@
     color: #aaa;
     width: 100%;
     display: flex;
-    margin-top: 3vw;
+    margin-top: 3.5vw;
     padding: 1.042vw 0;
     align-items: center;
     align-self: center;

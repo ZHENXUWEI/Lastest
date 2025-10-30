@@ -1,6 +1,6 @@
 
 export function daysUntil(targetDateStr) {
-    // console.log(targetDateStr)
+    console.log(targetDateStr)
     if(targetDateStr==null) return "长期政策"
     const targetDate = new Date(targetDateStr);
     const currentDate = new Date();
@@ -12,7 +12,6 @@ export function daysUntil(targetDateStr) {
         if(Math.floor(days)>=500){
             return "长期"
         }else{
-            if (Math.floor(days)<1)  return "小于1天";
             return "剩余"+Math.floor(days)+"天";
         }
         

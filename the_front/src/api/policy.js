@@ -11,16 +11,6 @@ export function policystatusAPI() {
     })
   }
 
-
-// 新增政策的API调用（参考现有接口封装）
-export function addPolicyAPI(policyData) {
-    return request({
-        url: `/system/policyContent/add/policy`,
-        method: 'POST',
-        data: policyData // 包含政策的各项属性
-    });
-}
-
 // 精准推荐  根据用户喜好获取政策
 export function policyUserHobby(id) {
   return request({
@@ -149,3 +139,4 @@ export function policyUserHobby(id) {
       url: `/api/policy/policyMatchList`,
     })
   }
+  
