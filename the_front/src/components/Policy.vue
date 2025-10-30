@@ -38,6 +38,10 @@ const currentCityDistricts = ref([]);
 const currentCityName = ref('');
 const selectedDistrictIndex = ref(0);
 
+// const toAddPolicy = () => {
+//   router.push('/policy/add'); // 跳转到新增页面
+// };
+
 const changeIndex = (subItem, index, i) => {
   selectedDistrictIndex.value = 999
   // console.log(subItem, index, i)
@@ -461,6 +465,7 @@ const clearEvent = () => {
             </el-tooltip>
             <el-button style="height: 2vw;font-size:1vw; padding: 0 1vw;" type="primary"
               @click="searchFun">智能搜索</el-button>
+<!--            <el-button type="primary" @click="toAddPolicy">新增政策</el-button>-->
 
           </div>
         </div>

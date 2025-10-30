@@ -31,6 +31,10 @@ const router = createRouter({
       path: '/',
       name: 'Home',
       component: Home
+    }, {
+          path: '/home',
+          component: () => import('@/views/Home.vue'), // 确保组件路径正确
+          meta: { title: '首页', requiresAuth: true } // 需要登录权限
     },
     
     {
