@@ -110,7 +110,7 @@ const BusinessSystem = () => {
   {{ parentData }}
   <div id="header">
     <div class="nav">
-      <img src="../assets/images/logo.png" alt="" />
+<!--      <img src="../assets/images/logo.png" alt="" />-->
       <span class="suxian"></span>
       <span style="font-size: 1.8vw; font-weight: bold">政策服务平台</span>
 

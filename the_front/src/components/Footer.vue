@@ -1,8 +1,8 @@
 <template>
     <div class="footer">
         <p style="font-size: 0.729vw ;">
-            <a class="footer-link">建设单位：浙江省产业大数据有限公司</a>
-            <a class="footer-link">使用问题反馈邮箱：yinchengyu@hzsteel.com</a>
+<!--            <a class="footer-link">建设单位：浙江省产业大数据有限公司</a>-->
+            <a class="footer-link">使用问题反馈邮箱：1291546985@qq.com</a>
         </p>
     </div>
 </template>
