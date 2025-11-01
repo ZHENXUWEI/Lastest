@@ -19,7 +19,7 @@ export function policyUserHobby(id) {
   })
 }
 
-  export function policyhobbyAPI({ obj, method='GET' }) {    
+  export function policyhobbyAPI({ obj, method='GET' }) {
     if (method=='GET') {
       return request({
         url: `/api/policy/policyhobby`,
@@ -106,6 +106,13 @@ export function policyUserHobby(id) {
     })
   }
 
+// 获取政策详情
+export function getPolicyDetail(id) {
+    return request({
+        url: `/api/policy/detail?id=${id}`,
+        method: "get"
+    });
+}
 
   export function policyinfoDetailPAPI(id) {
     return request({
@@ -139,4 +146,4 @@ export function policyUserHobby(id) {
       url: `/api/policy/policyMatchList`,
     })
   }
-  
+

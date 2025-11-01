@@ -25,7 +25,7 @@ const isOpen = ref(false);
 const fetchUsers = async () => {
   // const redirectUri = encodeURIComponent("http://172.19.15.224:5317");
   // const fullUrl = `http://172.18.30.42/ssoserver/moc2/authorize?response_type=code&client_id=zcfw&redirect_uri=${redirectUri}&state=ok`;
-  window.location.href = `/api/oauth-login`;
+  window.location.href = `/login`;
 
   // await jump();
 
@@ -164,7 +164,7 @@ const BusinessSystem = () => {
           </el-button
       >
       </div>
-      
+
     </div>
   </div>
 </template>

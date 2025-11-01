@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.util.StrUtil;
+import com.ruoyi.web.controller.api.common.Result;
 import com.ruoyi.web.controller.company.domain.CompanyIndicatorDictionary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -141,6 +142,20 @@ public class PolicyController extends BaseController {
     public TableDataInfo policyListById(@RequestParam Integer id) {
         startPage();
         return getDataTable(policyService.selectPolicyListById(id));
+    }
+
+    @GetMapping("/detail")
+    public Result<PolicyDetail> getPolicyDetail(@RequestParam Integer id) {
+        Policy policy = policyService.selectPolicyById(id);
+        if (policy == null) {
+            return Result.error("政策不存在");
+        }
+        // 组装政策详情数据
+        PolicyDetail detail = new PolicyDetail();
+        detail.setId(policy.getId());
+        detail.setName(policy.getName());
+        detail.setContent(policy.getContent());
+        return Result.success(detail);
     }
 
     @PreAuthorize("@ss.hasPermi('policyContext:policy:remove')")

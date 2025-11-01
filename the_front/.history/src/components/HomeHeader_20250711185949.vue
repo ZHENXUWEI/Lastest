@@ -24,7 +24,7 @@ const isOpen = ref(false);
 const fetchUsers = async () => {
   // const redirectUri = encodeURIComponent("http://172.19.15.224:5317");
   // const fullUrl = `http://172.18.30.42/ssoserver/moc2/authorize?response_type=code&client_id=zcfw&redirect_uri=${redirectUri}&state=ok`;
-  window.location.href = `https://zcfw.hzsteel.com/api/oauth-login`;
+  window.location.href = `http://localhost:5173/api/oauth-login`;
 
   //   const res = await loginAPI(1);
   //   console.log(res);
