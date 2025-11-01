@@ -35,7 +35,6 @@ const handleCurrentChange = (page) => {
   // console.log(`Current page: ${page}`);
 	emit('page-changed', page)
 	currentPage.value = page
-
 }
 </script>
 

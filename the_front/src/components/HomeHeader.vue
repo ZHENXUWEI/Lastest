@@ -81,8 +81,8 @@ onMounted(async () => {
   }
   const info = getCookie();
 
-  // console.log(111111111111);
-  // console.log(info);
+  console.log(111111111111);
+  console.log(info);
 
   if (info) {
     users.value = info;
@@ -110,9 +110,9 @@ const BusinessSystem = () => {
   {{ parentData }}
   <div id="header">
     <div class="nav">
-      <img  src="../assets/images/logo.png" alt="" />
+      <img src="../assets/images/logo.png" alt="" />
       <span class="suxian"></span>
-      <span style="font-size: 1.8vw; font-weight: bold;margin-bottom: 0.1vw;">政策服务平台</span>
+      <span style="font-size: 1.8vw; font-weight: bold">政策服务平台</span>
 
       <div class="nav_span">
         <span
@@ -123,22 +123,32 @@ const BusinessSystem = () => {
         <span :class="{ active: activeIndex === 1 }" style="cursor: pointer"
           ><RouterLink class="rl" to="/policy">政策查询</RouterLink></span
         >
-        <!-- <span :class="{ active: activeIndex === 2 }" style="cursor: pointer"
+        <span :class="{ active: activeIndex === 2 }" style="cursor: pointer"
           ><RouterLink class="rl" to="/match">政策匹配</RouterLink></span
-        > -->
+        >
       </div>
     </div>
 
-    <!-- <div class="user">
+    <div class="user">
       <div class="out_com_box" v-if="users.companyName">
         <div
           class="com_box"
           @mouseenter="isOpen = true"
           @mouseleave="isOpen = false"
         >
+          <!-- <span class="qiyelogo">企业</span> -->
           <span class="companyName" @click="BusinessSystem">{{
             users.companyName
           }}</span>
+          <!-- <div class="dropdown_box" v-if="isOpen">
+                    <div  class="dropdown">
+                        <ul>
+                            <li @click="BusinessSystem">业务系统</li>
+                            <li>管理系统</li>
+                            <li >退出登录</li>
+                        </ul>
+                    </div>
+                </div> -->
         </div>
         <span class="suxian"></span>
         <span
@@ -155,7 +165,7 @@ const BusinessSystem = () => {
       >
       </div>
       
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -178,9 +188,8 @@ const BusinessSystem = () => {
   align-items: center;
 }
 #header .nav img {
-  /* width: 17vw; */
-  height: 1.8vw;
-  margin-bottom: 0.25vw;
+  width: 17vw;
+  height: 3.5vw;
   margin-left: 2vw;
 }
 .suxian {

@@ -29,29 +29,3 @@ export function getKeyWordCookie() {
 export function removeKeyWordCookie() {
   Cookies.remove("KW");
 }
-
-export function setCategoryCookie(value) {
-  Cookies.set("Category", value);
-}
-
-export function getCategoryCookie() {
-  if (Cookies.get("Category")) {
-    return Cookies.get("Category");
-  }
-}
-
-export function removeCategoryCookie() {
-  Cookies.remove("Category");
-}
-export function setTabCookie(value) {
-  Cookies.set("Tab", value);
-}
-
-export function getTabCookie() {
-  if (Cookies.get("Tab")) {
-    return Cookies.get("Tab");
-  }
-}
-export function removeTabCookie() {
-  Cookies.remove("Tab");
-}

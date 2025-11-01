@@ -1,13 +1,13 @@
 <script setup>
 import HomeHeader from "@/components/HomeHeader.vue"
-import { ref, onMounted,nextTick } from "vue"
+import Footer from "@/components/Footer.vue"
+import { ref, onMounted } from "vue"
 import { setKeyWordCookie, getCookie } from '@/utils/cookie'
-import { policyinfoAPI, policystatusAPI, policyNumberAPI, policyVisitNAPI, policyMatchNAPI, policyPushAPI, policyeffectiveAPI, policyclassinfoAPI } from "@/api/policy"
+import { policyinfoAPI, policystatusAPI, policyNumberAPI, policyVisitNAPI, policyMatchNAPI, policyPushAPI, policyeffectiveAPI } from "@/api/policy"
 import { More, Search } from '@element-plus/icons-vue'
 import { useRouter, useRoute } from 'vue-router';
 import { daysUntil } from "@/utils/daysUtil"
-import { useCounterStore } from "../stores/counter";
-import { addVisitN } from "../api/user"
+
 const router = useRouter();
 const route = useRoute();
 const policyStatus = ref({});
@@ -16,72 +16,18 @@ const policyinfoHotData = ref({});
 const policyinfoPushData = ref({});
 const policyEffectiveData = ref({})
 const searchData = ref("");
-const refineOpts = ref([
-])
-const activeIndexList = ref([999, 999])//当前选中的tab 默认999避免选中
-const loadingList = ref([true, true])//政策模块加载状态绑定
-let params = [
-        {
-            "id": 0,
-            "name": "发布时间",
-            "children": [
-                "全部"
-            ],
-            "updateTime": null
-        },
-        {
-            "id": 1,
-            "name": "政策类别",
-            "children": [
-                "全部"
-            ],
-            "updateTime": null
-        },
-        {
-            "id": 2,
-            "name": "政策类型",
-            "children": [
-                "全部"
-            ],
-            "updateTime": null
-        },
-        {
-            "id": 3,
-            "name": "牵头部门",
-            "children": [
-                "全部"
-            ],
-            "updateTime": null
-        },
-        {
-            "id": 4,
-            "name": "申报状态",
-            "children": [
-                "全部"
-            ],
-            "updateTime": null
-        },
-        {
-            "id": 5,
-            "name": "适用区域",
-            "children": [
-                "全部"
-            ],
-            "updateTime": null,
-            "selectDistrict": "全部"
-        }
-    ]
 const lastDays = (deadTime) => {
 
     return daysUntil(deadTime)
 }
-const getpolicyEffectiveData = async (category, init = false) => {
-    var jsonData = {
+const getpolicyEffectiveData = async () => {
+       var jsonData = {
         categories: [],
         query1: "可申报政策",
         query2: "",
         timePeriod: []
     }
+
     const res = await policyeffectiveAPI(jsonData)
     // console.log("233" + res)
     if (res.data == undefined) {
@@ -90,26 +36,17 @@ const getpolicyEffectiveData = async (category, init = false) => {
     }
     var arr = res.data.row
 
-    var newArr = []
+     var newArr=[]
 
-    for (var i = 0; i < arr.length; i++) {
-        newArr.push(arr[i])
-        if (newArr.length == 5) break
+    for(var i=0;i<arr.length;i++){
+        if(lastDays(arr[i].expireDate)!="已过期"){
+            // console.log(arr[i])
+            newArr.push(arr[i])
+            if(newArr.length==5) break
+        }
     }
 
-    // for(var i=0;i<arr.length;i++){
-    //     if(lastDays(arr[i].expireDate)!="已过期"){
-    //         // console.log(arr[i])
-    //         newArr.push(arr[i])
-    //         if(newArr.length==5) break
-    //     }
-    // }
-    if (init==false) {
-        policyEffectiveData.value = newArr
-    }
-    else {
-        return newArr || []
-    }
+     policyEffectiveData.value=newArr
     // console.log(arr.length)
     // if (arr.length > 5) {
     //     policyEffectiveData.value = arr.slice(0, 5);
@@ -120,48 +57,33 @@ const getpolicyEffectiveData = async (category, init = false) => {
 }
 
 
-const getPolicyNewData = async (category, init = false) => {
+const getPolicyNewData = async () => {
     // console.log(type1,policyType,subPolicyType)
     var jsonData = {
-        categories: category || [],
+        categories: [],
         query1: "最新政策",
         query2: "",
         timePeriod: []
     }
     const jsonString = JSON.stringify(jsonData);
     const res = await policyinfoAPI(jsonString)
-    if (!res ||res.data == undefined) {
+    if (res.data == undefined) {
         policyinfoNewData.value = []
         return
     }
-    var arr = res.data.row || []
-    arr = arr.slice(0, 10).sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate)) || []
-    if (!init) {
-        policyinfoNewData.value = arr
-    }
-    else {
-        return arr || []
-    }
+    var arr = res.data.row
     // console.log("-----------")
     // console.log(arr)
-    //  var newArr=[]
+     var newArr=[]
 
-    //  for(var i=0;i<arr.length;i++){
-    //     newArr.push(arr[i])
-    //     if(newArr.length==5) break
-    //  }
-    // for(var i=0;i<arr.length;i++){
-    //     if(lastDays(arr[i].expireDate)!="已过期"){
-    //         // console.log(arr[i])
-    //         newArr.push(arr[i])
-    //         if(newArr.length==5) break
-    //     }
-    // }
-    // console.log(newArr)
-    // newArr.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate))
-
-    // policyinfoNewData.value=newArr
-    // policyinfoNewData.value.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate))
+    for(var i=0;i<arr.length;i++){
+        if(lastDays(arr[i].expireDate)!="已过期"){
+            // console.log(arr[i])
+            newArr.push(arr[i])
+            if(newArr.length==5) break
+        }
+    }
+    policyinfoNewData.value=newArr
     // console.log(arr.length)
     // if (arr.length > 5) {
     //     policyinfoNewData.value = arr.slice(0, 5);
@@ -172,11 +94,10 @@ const getPolicyNewData = async (category, init = false) => {
 
 }
 
-const getPolicyHotData = async (category, init = false) => {
-
+const getPolicyHotData = async () => {
     // console.log(type1,policyType,subPolicyType)
     var jsonData = {
-        categories: category || [],
+        categories: [],
         query1: "浏览量",
         query2: "",
         timePeriod: []
@@ -189,27 +110,16 @@ const getPolicyHotData = async (category, init = false) => {
         return
     }
     var arr = res.data.row
-    // var newArr=[]
+    var newArr=[]
 
-    // for(var i=0;i<arr.length;i++){
-    //     newArr.push(arr[i])
-    //     if(newArr.length==5) break
-    //  }
-    // for(var i=0;i<arr.length;i++){
-    //     if(lastDays(arr[i].expireDate)!="已过期"){
-    //         // console.log(arr[i])
-    //         newArr.push(arr[i])
-    //         if(newArr.length==5) break
-    //     }
-    // }
-    arr =arr.slice(0, 10);
-    if (init==false) {
-        policyinfoHotData.value = arr
+    for(var i=0;i<arr.length;i++){
+        if(lastDays(arr[i].expireDate)!="已过期"){
+            // console.log(arr[i])
+            newArr.push(arr[i])
+            if(newArr.length==5) break
+        }
     }
-    else {
-        return arr.slice(0, 10) || [];
-    }
-    // policyinfoHotData.value=newArr
+    policyinfoHotData.value=newArr
     // if (arr.length > 5) {
     //     policyinfoHotData.value = arr.slice(0, 5);
     // } else {
@@ -217,44 +127,34 @@ const getPolicyHotData = async (category, init = false) => {
     // }
 }
 
-const getPolicyPushData = async (category, init = false) => {
+const getPolicyPushData = async () => {
     const info = getCookie()
     // console.log(1111111111111111)
     // console.log(info.id)
     let res;
-    if (info) {
-        if (info.id) {
+    if(info){
+        if(info.id){
             res = await policyPushAPI(info.id)//'getCookie().id'
         }
     }
-    //  console.log(res)
-    // if (res.data == undefined) {
-    //     policyinfoHotData.value = []
-    //     return
-    // }
+//  console.log(res)
+    if (res.data == undefined) {
+        policyinfoHotData.value = []
+        return
+    }
 
     var arr = res.data.row
     // console.log(arr)
-    var newArr = []
+     var newArr=[]
 
-    for (var i = 0; i < arr.length; i++) {
-        newArr.push(arr[i])
-        if (newArr.length == 5) break
+    for(var i=0;i<arr.length;i++){
+        if(lastDays(arr[i].expireDate)!="已过期"){
+            // console.log(arr[i])
+            newArr.push(arr[i])
+            if(newArr.length==5) break
+        }
     }
-
-    // for(var i=0;i<arr.length;i++){
-    //     if(lastDays(arr[i].expireDate)!="已过期"){
-    //         // console.log(arr[i])
-    //         newArr.push(arr[i])
-    //         if(newArr.length==5) break
-    //     }
-    // }
-    if (init==false) {
-        policyinfoPushData.value = newArr
-    }
-    else {
-        return newArr || []
-    }
+    policyinfoPushData.value=newArr
     // if (arr.length > 5) {
     //     policyinfoPushData.value = arr.slice(0, 5);
     // } else {
@@ -263,21 +163,6 @@ const getPolicyPushData = async (category, init = false) => {
     // console.log(policyinfoPushData.value)
 
 }
-const getLastDayData=async()=>{
-    var jsonData = {
-        categories: [],
-        query1: "昨日新增",
-        query2: "",
-        timePeriod: []
-    }
-    const jsonString = JSON.stringify(jsonData);
-    const res = await policyinfoAPI(jsonString)
-
-    if (res.data == undefined) {
-        return []
-    }
-    return res.data.total
-}
 
 const detail = async (id) => {
     await policyNumberAPI(id)
@@ -285,37 +170,13 @@ const detail = async (id) => {
 }
 
 onMounted(async () => {
-    params.find(item=>item.name==="政策类型").children=['全部']
-    await getClassinfo()
-    try {
-        const [ newDataResult,hotDataResult,statusResult,lastDResult] = await Promise.all([
-            getPolicyNewData(params,true),
-            getPolicyHotData(params,true),
-            policystatusAPI(),
-            getLastDayData()
-        ]);
-        // console.log(newDataResult)
-        // console.log(hotDataResult)
-        policyinfoNewData.value = newDataResult || []
-        policyinfoHotData.value = hotDataResult || []
-        policyStatus.value = statusResult.data || []
-        policyStatus.value['total']=lastDResult
-        activeIndexList.value = [0, 0]
-    }
-    catch (err) {
-        console.log('数据加载失败',err)
-        policyinfoNewData.value = []
-        policyinfoHotData.value = []
-    }finally{
-        loadingList.value = [false, false]
-        addVisitN()
-    }
+    const res = await policystatusAPI()
+    policyStatus.value = res.data
 
-
-    // getClassinfo() 
- 
-    // await getPolicyPushData()
-    // await getpolicyEffectiveData()
+    await getPolicyNewData()
+    await getPolicyHotData()
+    await getPolicyPushData()
+    await getpolicyEffectiveData()
 })
 const searchFun = () => {
     setKeyWordCookie(searchData.value)
@@ -345,46 +206,16 @@ const toPolicyModelYuCeFun = async () => {
 const currentYear = ref(null);
 currentYear.value = new Date().getFullYear();
 
-//type为从左到右 从上到下 政策内容模块的序号
-const moreInfo = (type) => {
-    useCounterStore.count=type;
-    console.log(useCounterStore.count)
+const moreInfo = () => {
     router.push("/policy")
 }
-const getClassinfo = async () => {
-    let res = await policyclassinfoAPI()
-    if (res.data) {
-        refineOpts.value = res.data[1].children.slice(0, -1) || []
-    }
-}
-
-//query-分类参数，type-政策类型，index-当前选中分类
-const getPolicyRefineData = async (query, type, index) => {
-    // console.log(query,type,index)
-    params.find(item => item.name === "政策类型").children=[query]
-    loadingList.value[type] = true
-    if (type == 0) {
-        policyinfoNewData.value = []
-        await getPolicyNewData(params)
-        activeIndexList.value[type] = index
-    }
-    else if (type == 1) {
-        policyinfoHotData.value = []
-        await getPolicyHotData(params)
-        activeIndexList.value[type] = index
-    }
-    loadingList.value[type] = false
-}
-
 </script>
 
 <template>
     <div id="main">
         <HomeHeader></HomeHeader>
         <div class="banner">
-            <div class="image-wrapper">
-                <img width="100%;" src="../assets/images/banner.jpg" alt=""/> 
-                </div>
+            <img width="100%" src="../assets/images/banner.jpg" alt="">
             <div class="policySearch">
                 <div class="info">
                     <p>政策信息查询</p>
@@ -413,27 +244,17 @@ const getPolicyRefineData = async (query, type, index) => {
                 </div>
 
                 <div class="policyOverview_show">
-                    <img src="../assets/images/政策智能匹配.png" alt="">
-                    <div>
-                        <p>
-                            <font>{{ policyStatus.total }}</font>条
-                        </p>
-                        <p>今日新增</p>
-                    </div>
-                </div>
-
-                <div class="policyOverview_show">
                     <img src="../assets/images/用户访问.png" class="policyOverview_img" alt="">
                     <div>
                         <!-- <p><font >{{ policyStatus.userVisitN}}万+</font>次</p> -->
                         <p>
-                            <font>{{ policyStatus.userVisitN }}</font>次
+                            <font>{{  policyStatus.userVisitN }}</font>次
                         </p>
                         <p>用户访问</p>
                     </div>
                 </div>
 
-                <!-- <div class="policyOverview_show">
+                <div class="policyOverview_show">
                     <img src="../assets/images/企业用户.png" class="policyOverview_img" alt="">
                     <div>
                         <p>
@@ -461,119 +282,52 @@ const getPolicyRefineData = async (query, type, index) => {
                         </p>
                         <p>企业申报数量</p>
                     </div>
-                </div> -->
+                </div>
 
             </div>
         </div>
 
-        <!-- <div class style="position: absolute;width: 100%;top:90%;background-color: #F8F9FE;"> -->
         <div class="policy_new">
             <div class="policy_left">
                 <div class="newP">
-                    <div style="display: flex;justify-content: space-between;">
-                        <h1>最新政策</h1><span style="width:3vw;" v-loading="loadingList[0]" element-loading-custom-class="maxheight-5vw"
-                            element-loading-background="rgba(255,255,255,0)"></span>
-                    </div>
-                    <p :class="loadingList[0] == 1 ? 'disabled' : ''"><span @click='getPolicyRefineData(item, 0, index)'
-                            :style="{ color: index == activeIndexList[0] ? '#3276FD' : 'rgba(0,0,0,0.85)' }"
-                            style="font-size: 1.1vw;cursor: pointer;" v-for="(item, index) in refineOpts"
-                            :key="index">{{ item }}</span></p>
-                    <!-- <p @click="moreInfo" style="cursor: pointer;">更多>></p> -->
+                    <h1>热度推荐</h1>
+                    <p @click="moreInfo" style="cursor: pointer;">更多>></p>
                 </div>
-                <el-skeleton :count="5" animated :loading='loadingList[0]'>
-                    <template #template>
-                        <!-- <el-skeleton-item  variant="p" style="height: 0.85vw;"/> -->
-                        <div class="el-card">
-                            <el-skeleton-item variant="p" style="height: 2.98vw;margin-top:0.3vw" />
-                            <div style="display: flex;">
-                                <div style="margin-top: 1vw;">
-                                    <el-skeleton-item variant="p" style="height: 0.8vw;width:80%;margin-top:0.13vw" />
-                                </div>
-                                <div style="margin-top: 0.7vw;text-align: end;">
-                                    <el-skeleton-item style="width: 7vw;height: 1.3vw;" variant="p"></el-skeleton-item>
-                                    <el-skeleton-item style="width: 7vw;height: 1.3vw;margin-left: 1vw;" variant="p"></el-skeleton-item>
-                                </div>
-                                 
-                            </div>
-                        </div>
-                    </template>
-                </el-skeleton>
-                <div class="el-card " v-for="(item, index) in policyinfoNewData" :key="index">
-                    <h5 @click="detail(item.id)">{{ item.policyName }}</h5>
-                    <div class="policyInfo">
-                        <div style="width: 55%">
-                            <p>
-                                <span>牵头部门：</span><span>{{ item.leaderDepartment }}</span>
-                                <span style="margin-left: 0.5vw;">发布时间：</span><span>{{ item.publishDate.split('T')[0] }}</span>
-                            </p> 
-                        </div>
-                        <div  style="width: 45%;margin-top: 0.7vw;text-align: end;">
-                            <el-tag type="danger">{{ lastDays(item.expireDate) }}</el-tag>
-                            <el-tag style="margin-left: 1vw;">{{ item.policyType ? item.policyType : "暂无政策类型" }}</el-tag>
+                <div class="el-card " v-for="(item, index) in policyinfoHotData" :key="index">
+                    <h5 @click="detail(item.id)">{{ item.name }}</h5>
+                    <p>
+                        <span>牵头部门：</span><span>{{ item.leaderDepartment }}</span>
+                        <span style="margin-left: 0.5vw;">发布时间：</span><span>{{ item.publishDate.split('T')[0] }}</span>
+                    </p>
+                    <div >
+                        <el-tag class="el-tag" type="danger">{{ lastDays(item.expireDate) }}</el-tag>
+                        <el-tag style="margin-left: 1vw;">{{ item.policyType ? item.policyType:"暂无政策类型"}}</el-tag>
                         <!-- {{ item.isMoney ? "资金支持" : "无资金支持" }} -->
-                        </div>
                     </div>
                 </div>
-                <div style="display: flex;justify-content: end;margin-top: 1vw;font-size: 1vw;">
-                    <p @click="moreInfo(0)" style="cursor: pointer;">更多>></p>
-                </div>
-                <el-empty v-if="policyinfoNewData.length == 0" description="没有找到相关政策信息" />
+
             </div>
 
             <div class="policy_right">
                 <div class="newP">
-                    <div style="display: flex;justify-content: space-between;">
-                        <h1>热度推荐</h1><span style="width:3vw" v-loading="loadingList[1]" element-loading-custom-class="maxheight-5vw"
-                            element-loading-background="rgba(255,255,255,0)"></span>
-                    </div>
-                    <p :class="loadingList[1] == 1 ? 'disabled' : ''"><span @click='getPolicyRefineData(item, 1, index)'
-                            :style="{ color: index == activeIndexList[1] ? '#3276FD' : 'rgba(0,0,0,0.85)' }"
-                            style="font-size: 1.1vw;cursor: pointer;" v-for="(item, index) in refineOpts"
-                            :key="index">{{ item }}</span></p>
-                    <!-- <p @click="moreInfo" style="cursor: pointer;">更多>></p> -->
+                    <h1>最新政策</h1>
+                    <p @click="moreInfo" style="cursor: pointer;">更多>></p>
                 </div>
-                <el-skeleton :count="5" animated :loading='loadingList[1]'>
-                    <template #template>
-                        <!-- <el-skeleton-item  variant="p" style="height: 0.85vw;"/> -->
-                        <div class="el-card">
-                            <el-skeleton-item variant="p" style="height: 2.98vw;margin-top:0.3vw" />
-                            <div style="display: flex;">
-                                <div style="margin-top: 1vw;">
-                                    <el-skeleton-item variant="p" style="height: 0.8vw;width:80%;margin-top:0.13vw" />
-                                </div>
-                                <div style="margin-top: 0.7vw;text-align: end;">
-                                    <el-skeleton-item style="width: 7vw;height: 1.3vw;" variant="p"></el-skeleton-item>
-                                    <el-skeleton-item style="width: 7vw;height: 1.3vw;margin-left: 1vw;" variant="p"></el-skeleton-item>
-                                </div>
-                                 
-                            </div>
-                        </div>
-                    </template>
-                </el-skeleton>
-                <div class="el-card " v-for="(item, index) in policyinfoHotData" :key="index">
-                    <h5 @click="detail(item.id)">{{ item.name }}</h5>
-                    <div class="policyInfo">
-                        <div style="width: 55%">
-                            <p>
-                                <span>牵头部门：</span><span>{{ item.leaderDepartment }}</span>
-                                <span style="margin-left: 0.5vw;">发布时间：</span><span>{{ item.publishDate.split('T')[0] }}</span>
-                            </p> 
-                        </div>
-                        <div style="width: 45%;margin-top: 0.7vw;text-align: end;">
-                            <el-tag type="danger">{{ lastDays(item.expireDate) }}</el-tag>
-                            <el-tag style="margin-left: 1vw;">{{ item.policyType ? item.policyType : "暂无政策类型" }}</el-tag>
+                <div class="el-card " v-for="(item, index) in policyinfoNewData" :key="index">
+                    <h5 @click="detail(item.id)">{{ item.policyName }}</h5>
+                    <p>
+                        <span>牵头部门：</span><span>{{ item.leaderDepartment }}</span>
+                        <span style="margin-left: 0.5vw;">发布时间：</span><span>{{ item.publishDate.split('T')[0] }}</span>
+                    </p>
+                    <div>
+                        <el-tag type="danger">{{ lastDays(item.expireDate) }}</el-tag>
+                        <el-tag style="margin-left: 1vw;">{{ item.policyType ? item.policyType:"暂无政策类型"}}</el-tag>
                         <!-- {{ item.isMoney ? "资金支持" : "无资金支持" }} -->
-                        </div>
                     </div>
                 </div>
-                <div style="display: flex;justify-content: end;margin-top: 1vw;font-size: 1vw">
-                    <p @click="moreInfo(1)" style="cursor: pointer;">更多>></p>
-                </div>
-                <el-empty v-if="policyinfoHotData.length == 0" description="没有找到相关政策信息" />
-
             </div>
         </div>
-        <!-- <div class="policy_new policy_new_extra">
+        <div class="policy_new policy_new_extra">
             <div class="policy_left">
                 <div class="newP">
                     <h1>精准推送政策</h1>
@@ -588,7 +342,7 @@ const getPolicyRefineData = async (query, type, index) => {
                     <div>
                         <el-tag type="danger">{{ lastDays(item.expireDate) }}</el-tag>
                         <el-tag style="margin-left: 1vw;">{{ item.policyType ? item.policyType:"暂无政策类型"}}</el-tag>
-                        
+                        <!-- {{ item.isMoney ? "资金支持" : "无资金支持" }} -->
                     </div>
                 </div>
             </div>
@@ -606,14 +360,14 @@ const getPolicyRefineData = async (query, type, index) => {
                     <div>
                         <el-tag type="danger">{{ lastDays(item.expireDate) }}</el-tag>
                         <el-tag style="margin-left: 1vw;">{{ item.policyType ? item.policyType:"暂无政策类型"}}</el-tag>
-                       
+                        <!-- {{ item.isMoney ? "资金支持" : "无资金支持" }} -->
                     </div>
                 </div>
             </div>
-        </div> -->
+        </div>
 
 
-        <!-- <div class="hotpolicy">
+        <div class="hotpolicy">
             <div class="hotpolicy_header">
                 <h3>热门评价模型</h3>
                 <p>海量项目申报查询 &nbsp;&nbsp;&nbsp;&nbsp; 一对一政策精准评价</p>
@@ -666,8 +420,8 @@ const getPolicyRefineData = async (query, type, index) => {
                         立即自评</span>
                 </div>
             </div>
-        </div> -->
-        <!-- <div class="hotpolicy">
+        </div>
+        <div class="hotpolicy">
             <div class="hotpolicy_header">
                 <h3>热门预测模型</h3>
                 <p>海量项目申报查询 &nbsp;&nbsp;&nbsp;&nbsp; 一对一政策精准预测</p>
@@ -720,28 +474,12 @@ const getPolicyRefineData = async (query, type, index) => {
                         立即自评</span>
                 </div>
             </div>
-        </div> -->
-       
+        </div>
+        <Footer/>
     </div>
 </template>
 
 <style scoped>
-.image-wrapper {
-  width: 100%;
-  height: 19.25vw; 
-  overflow: hidden;
-  position: relative;
-}
-
-.image-wrapper img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: auto; 
-  display: block;
-}
-
 input:-internal-autofill-previewed,
 input:-internal-autofill-selected {
     transition: background-color 15000s ease-out 10s;
@@ -770,8 +508,7 @@ input::placeholder {
     justify-content: space-around;
 
     left: 12.5%;
-    /* top: 18%; */
-    top: -1.8%;
+    top: 18%;
     z-index: 9999;
 }
 
@@ -800,28 +537,24 @@ input::placeholder {
     align-items: center;
     width: 38vw;
     height: 3.5vw;
+
     background-color: white;
     border-radius: 0.5vw;
 }
 
 .policySearch #username {
+
     width: 28vw;
     outline: none;
     border: none;
     height: 3vw;
-    font-size: 1.2vw;
     background-color: white;
-}
-.policySearch #username::placeholder {
-    font-size: 1.1vw;
-    line-height: 3vw;
-    
 }
 
 .policySearch .btn {
     width: 6vw;
     height: 3vw;
-    font-size: 1.1vw;
+    font-size: 1vw;
     outline: none;
     border: none;
     border-radius: 0.5vw;
@@ -830,20 +563,15 @@ input::placeholder {
     cursor: pointer;
 }
 
-.policyOverview{
-    height: 6vw !important;
-}
 .banner .policyOverview {
-    /* width: 75%; */
-    width: 38vw;
+    width: 75%;
     height: 8vw;
     position: absolute;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    left: 31.7%;
-    /* bottom: 0; */
-    top:62.9%;
+    left: 50%;
+    bottom: 0;
     transform: translate(-50%, 0);
     background-color: rgba(255, 255, 255, 0.5);
 
@@ -856,18 +584,16 @@ input::placeholder {
 }
 
 .policyOverview_show img {
-    /* width: 3vw; */
-    max-width: 3.5vw;
-    min-width: 3vw;
+    width: 3vw;
 }
 
 .policyOverview_show div {
     margin-left: 1vw;
-    font-size: 1.1vw;
+    font-size: 0.9vw;
 }
 
 .policyOverview_show div font {
-    font-size: 1.8vw;
+    font-size: 1.4vw;
     color: #3276FD;
 }
 
@@ -876,12 +602,10 @@ input::placeholder {
     width: 75%;
     justify-self: center;
     justify-content: space-between;
+
     margin: 0 auto;
-    background-color: #F8F9FE;
-    margin: 0 20vw;
-    /* margin-top: 5vw; */
-    /* 0.7 */
-    margin-top: 1.8vw;
+    margin-top: 5vw;
+
 }
 
 .policy_new_extra {
@@ -913,16 +637,9 @@ input::placeholder {
 }
 
 .newP p {
-    display: flex;
-    text-align: start;
-    justify-content: space-between;
-    /* text-align: end;
+    text-align: end;
     font-size: 0.8vw;
-    color: #6B9EF7; */
-}
-
-.newP p>span:hover {
-    background-color: var(--el-fill-color-light)
+    color: #6B9EF7;
 }
 
 
@@ -930,27 +647,20 @@ input::placeholder {
     display: flex;
     flex-direction: column;
     width: 100%;
-    /* margin-top:1vw; */
-    margin-top: 0.5vw;
-    padding: 0.7vw 1vw;
-    /* height: 9.2vw; */
+    margin-top: 1vw;
+    padding: 1vw;
 }
 
 .el-card h5 {
-    height: 3.6vw;
-    max-height: 3.6vw;
     display: flex;
     /* flex-wrap: wrap; */
     cursor: pointer;
     font-size: 1.2vw;
     width: 100%;
     overflow: hidden;
-    /* white-space: nowrap; */
+    white-space: nowrap;
     text-overflow: ellipsis;
 
-}
-.el-card p{
-    margin-top:1vw;
 }
 
 .el-card span {
@@ -961,12 +671,12 @@ input::placeholder {
 .el-card div {
     width: 100%;
     height: 2vw;
-    margin-bottom: 0.3vw;
-    /* text-align: end */
+    margin-bottom: 0.5vw;
+    text-align: end
 }
 
 .el-card div .el-tag {
-    width: 7vw;
+    width:7vw;
     padding: 0 1.5vw;
     font-size: 0.8vw;
     overflow-x: hidden;
@@ -983,7 +693,7 @@ input::placeholder {
     justify-items: center;
     align-items: center;
     padding: 2vw;
-
+    
 }
 
 
@@ -1061,17 +771,5 @@ input::placeholder {
     line-height: 1.8vw;
 }
 
-.disabled {
-    pointer-events: none;
-    opacity: 0.6;
-}
-.policyInfo{
-    display: flex
-}
-:deep(.maxheight-5vw .el-loading-spinner .circular){
-    margin-top:0.6vw;
-    margin-left: 1.5vw;
-    width: 1.5vw !important;
-    height: 1.5vw !important;
-}
+
 </style>

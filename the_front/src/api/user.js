@@ -55,9 +55,3 @@ export function getInfo() {
     url: "/getInfo",
   });
 }
-
-export function addVisitN(){
-  return request({
-    url: "/api/policy/userVisitN",
-  })
-}
