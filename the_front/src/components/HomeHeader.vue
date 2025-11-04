@@ -25,7 +25,12 @@ const isOpen = ref(false);
 const fetchUsers = async () => {
   // const redirectUri = encodeURIComponent("http://172.19.15.224:5317");
   // const fullUrl = `http://172.18.30.42/ssoserver/moc2/authorize?response_type=code&client_id=zcfw&redirect_uri=${redirectUri}&state=ok`;
-  window.location.href = `/api/oauth-login`;
+  try {
+    // 直接请求后端的/oauth-login接口，由后端处理重定向
+    window.location.href = '/api/oauth-login'; // 利用后端接口重定向到SSO服务
+  } catch (error) {
+    console.error('登录跳转失败:', error);
+  }
 
   // await jump();
 

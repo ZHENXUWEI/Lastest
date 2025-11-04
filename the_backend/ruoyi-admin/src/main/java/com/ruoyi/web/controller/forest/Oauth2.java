@@ -23,7 +23,7 @@ public interface Oauth2 {
     String getAccessTokenExample(@Body Map<String, Object> map);
 
     @Get(
-            url = "https://sso.hzsteel.com/ssoserver/moc2/token?grant_type={grantType}&client_id={clientId}&client_secret={clientSecret}&code={code}&redirect_uri={redirectUri} "
+            url = "http://localhost:8080/ssoserver/moc2/token?grant_type={grantType}&client_id={clientId}&client_secret={clientSecret}&code={code}&redirect_uri={redirectUri} "
     )
     Authentication getAccessToken(@Var("grantType") String grantType,
                                   @Var("clientId") String clientId,
@@ -33,12 +33,12 @@ public interface Oauth2 {
 
 
     @Get(
-            url = "https://sso.hzsteel.com/ssoserver/moc2/me?access_token={accessToken}"
+            url = "http://localhost:8080/ssoserver/moc2/me?access_token={accessToken}"
     )
     Authentication getOpenId(@Var("accessToken") String accessToken);
 
     @Get(
-            url = "https://sso.hzsteel.com/ssoserver/user/info?access_token={accessToken}&oauth_consumer_key={oauthConsumerKey}&openid={openId}"
+            url = "http://localhost:8080/ssoserver/user/info?access_token={accessToken}&oauth_consumer_key={oauthConsumerKey}&openid={openId}"
     )
     Authentication getUserInfo(@Var("accessToken") String accessToken,
                                @Var("oauthConsumerKey") String oauthConsumerKey,

@@ -270,7 +270,7 @@ public class SysLoginController {
     public AjaxResult loginBySSO(@RequestParam("code") String code, @RequestParam("state") String state, HttpServletResponse response) {
         try {
             //测试
-            String redirectUri = URLEncoder.encode("http://172.19.14.40:5317/", StandardCharsets.UTF_8);
+            String redirectUri = URLEncoder.encode("http://localhost:8080/", StandardCharsets.UTF_8);
             //正式
 //            String redirectUri = URLEncoder.encode("https://zcfw.hzsteel.com", StandardCharsets.UTF_8);
             Authentication accessTokenRes = oauth2.getAccessToken("authorization_code", "zcfw", "47db0cbeb8c3696d4c5b91cfe6f85e9b", code, redirectUri);
@@ -513,11 +513,11 @@ public class SysLoginController {
     @GetMapping("/oauth-login")
     public void redirectToOAuth(HttpServletResponse response) throws IOException {
         //测试
-        String redirectUri = URLEncoder.encode("http://172.19.14.40:5317/", StandardCharsets.UTF_8);
+        String redirectUri = URLEncoder.encode("http://localhost:5173", StandardCharsets.UTF_8);
 
         //正式
         //String redirectUri = URLEncoder.encode("https://zcfw.hzsteel.com", StandardCharsets.UTF_8);
-        String oauthUrl = "https://sso.hzsteel.com/ssoserver/moc2/authorize?response_type=code"
+        String oauthUrl = "           "
                 + "&client_id=zcfw"
                 + "&redirect_uri=" + redirectUri
                 + "&state=ok";
